@@ -191,7 +191,7 @@ with st.form("my_form"):
     hpo_raw = st.multiselect(
         "Provide your HPOs",
         list(hp_desc_id.keys()),
-        ["Polyarticular arthritis", "Abdominal pain", "Recurrent fever"],
+        ["Polyarticular arthritis", "Crohn's disease", "Recurrent fever"],
         # [
         #    "Recurrent pneumonia",
         #    "Atopic dermatitis",
@@ -338,7 +338,7 @@ if submit_button:
                     results_sum.loc[ncbi[gene_diag], "rank"],
                     "  |  ",
                     "Gene ID percentage match:",
-                    round(results_sum.loc[ncbi[gene_diag], "perc_matchs"], 2),
+                    round(results_sum.loc[ncbi[gene_diag], "perc_matchs"] * 100, 2),
                 )
                 st.write(pd.DataFrame(match.loc[ncbi[gene_diag]]).T)
                 st.write(
