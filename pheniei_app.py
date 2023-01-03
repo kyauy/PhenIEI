@@ -337,8 +337,8 @@ if submit_button:
                     "Gene ID rank:",
                     results_sum.loc[ncbi[gene_diag], "rank"],
                     "  |  ",
-                    "Gene ID count:",
-                    round(results_sum.loc[ncbi[gene_diag], "score"], 4),
+                    "Gene ID percentage match:",
+                    round(results_sum.loc[ncbi[gene_diag], "perc_matchs"], 2),
                 )
                 st.write(pd.DataFrame(match.loc[ncbi[gene_diag]]).T)
                 st.write(
