@@ -175,7 +175,8 @@ def add_direct_parents(hpo_list):
     for element in hpo_list:
         hpo_list_return.append(element)
         for i in hp_onto[element]["direct_parent"]:
-            hpo_list_return.append(i)
+            if hp_onto[i]["distance_to_root"] > 3:
+                hpo_list_return.append(i)
     return list(set(hpo_list_return))
 
 
@@ -287,6 +288,7 @@ if submit_button:
         results_sum["rank"] = (
             results_sum["score"].rank(ascending=False, method="min").astype(int)
         )
+        results_sum.loc[results_sum["score"] == 0, "rank"] = 5235
         cols = results_sum.columns.tolist()
         cols = cols[-5:] + sorted(cols[:-5])
         match = results_sum[cols].sort_values(by=["score"], ascending=False)
