@@ -187,6 +187,7 @@ iei_info = load_iei_info()
 data = load_data()
 gene_list = list(data.index)
 symbol_list = [symbol[i] for i in gene_list if i in symbol.keys()]
+symbol_list_iuis = list(set(iei_info["UpdatedGene"].to_list()))
 
 with st.form("my_form"):
     hpo_raw = st.multiselect(
@@ -292,6 +293,8 @@ if submit_button:
         cols = results_sum.columns.tolist()
         cols = cols[-5:] + sorted(cols[:-5])
         match = results_sum[cols].sort_values(by=["score"], ascending=False)
+        top20 = match["gene_symbol"].to_list()[0:20]
+        top_iuis = [x for x in top20 if x in symbol_list_iuis]
 
         st.dataframe(match[match["score"] > 0].drop(columns=["sum"]))
         # st.write(
@@ -396,7 +399,21 @@ if submit_button:
                     ]
                 ]
             )
-
+        st.subheader("Top 20 IUIS descriptions")
+        st.write(
+            iei_info.reset_index()
+            .set_index("UpdatedGene")
+            .loc[top_iuis]
+            .reset_index()
+            .set_index("index")[
+                [
+                    "Major category",
+                    "Subcategory",
+                    "Inheritance",
+                    "Associated features",
+                ]
+            ]
+        )
     else:
         st.write(
             "No HPO terms provided in correct format.",
