@@ -292,8 +292,11 @@ if submit_button:
         cols = results_sum.columns.tolist()
         cols = cols[-5:] + sorted(cols[:-5])
         match = results_sum[cols].sort_values(by=["score"], ascending=False)
-        st.dataframe(match[match["score"] > 0].drop(columns=["sum"]))
 
+        st.dataframe(match[match["score"] > 0].drop(columns=["sum"]))
+        # st.write(
+        #    "Number of genes with at least one match: ", len(match[match["score"] > 0])
+        # )
         match_csv = convert_df(match)
 
         st.download_button(
@@ -306,6 +309,9 @@ if submit_button:
 
         if gene_diag:
             if ncbi[gene_diag] in results_sum.index:
+                st.subheader(
+                    "Gene of interest: " + gene_diag,
+                )
                 p = (
                     ggplot(match, aes("score"))
                     + geom_histogram()
@@ -349,7 +355,7 @@ if submit_button:
                 )
             else:
                 st.write("Gene ID rank:", " Gene not ranked by PhenoIEI")
-            st.subheader("Selected IEI gene descriptions")
+            st.subheader(gene_diag + " IUIS descriptions")
             st.write("Disease category")
             st.write(
                 iei_info[iei_info["UpdatedGene"] == gene_diag][
