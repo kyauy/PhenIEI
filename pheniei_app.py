@@ -20,9 +20,9 @@ st.sidebar.header("Exploring knowledge on Inborn Errors of Immunity")
 
 st.sidebar.markdown(
     """
- This webapp browse knowledge on genetic diseases in inborn errors of immunity (IEI).  
+ This webapp browses knowledge on genetic diseases in inborn errors of immunity (IEI) based on 2022 IUIS classification and HPO.  
  
- If any question or suggestions, please contact: [kevin.yauy@chu-montpellier.fr](kevin.yauy@chu-montpellier.fr)  
+ If any questions or suggestions, please contact: [kevin.yauy@chu-montpellier.fr](kevin.yauy@chu-montpellier.fr)  
 
  Code source is available in GitHub:
  [https://github.com/kyauy/PhenIEI](https://github.com/kyauy/PhenIEI)
