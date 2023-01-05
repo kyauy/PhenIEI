@@ -5,6 +5,8 @@ import pandas as pd
 from PIL import Image
 import ujson as json
 from plotnine import *
+import streamlit_toggle as tog
+
 
 # -- Set page config
 apptitle = "PhenIEI"
@@ -219,6 +221,16 @@ with st.form("my_form"):
         label="Submit",
     )
 
+    switch = tog.st_toggle_switch(
+        label="Add direct parents of symptoms in HPO",
+        key="Key1",
+        default_value=True,
+        label_after=False,
+        inactive_color="#D3D3D3",
+        active_color="#ff4b4b",
+        track_color="#e09c26",
+    )
+
 if submit_button:
     hpo = get_hpo_id(hpo_raw)
     hpo_list_ini = hpo.strip().split(",")
@@ -274,8 +286,10 @@ if submit_button:
                         "-",
                         get_hpo_name(hpo_to_test),
                     )
-    # hpo_list = list(set(hpo_list_up))
-    hpo_list = add_direct_parents(hpo_list_up)
+    if switch == True:
+        hpo_list = add_direct_parents(hpo_list_up)
+    else:
+        hpo_list = list(set(hpo_list_up))
 
     if hpo_list:
         with st.expander("See HPO inputs"):

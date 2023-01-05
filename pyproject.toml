@@ -11,6 +11,7 @@ streamlit = "^1.16.0"
 plotnine = "^0.10.1"
 ujson = "^5.6.0"
 pandas = "^1.5.2"
+streamlit-toggle-switch = "^1.0.2"
 
 [tool.poetry.dev-dependencies]
 
