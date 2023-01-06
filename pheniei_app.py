@@ -93,7 +93,7 @@ def symbol_to_id_to_dict():
     hash_funcs={"_json.Scanner": hash}, allow_output_mutation=True, max_entries=50
 )
 def load_hp_ontology():
-    with open("data/hpo_obo_202212_iei.json") as json_data:
+    with open("data/hpo_obo_2023.json") as json_data:
         data_dict = json.load(json_data)
     return data_dict
 
@@ -103,6 +103,9 @@ def hpo_description_to_id():
     data_dict = {}
     for key, value in hp_onto.items():
         data_dict[value["name"]] = key
+        if len(value["synonyms"]) > 0:
+            for synonym in value["synonyms"]:
+                data_dict[synonym] = key
     return data_dict
 
 
@@ -228,7 +231,7 @@ with st.form("my_form"):
         label_after=False,
         inactive_color="#D3D3D3",
         active_color="#ff4b4b",
-        track_color="#e09c26",
+        track_color="#ffcccc",
     )
 
 if submit_button:
