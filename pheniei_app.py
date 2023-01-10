@@ -310,7 +310,7 @@ if submit_button:
         cols = results_sum.columns.tolist()
         cols = cols[-5:] + sorted(cols[:-5])
         match = results_sum[cols].sort_values(by=["score"], ascending=False)
-        top20 = match["gene_symbol"].to_list()[0:20]
+        top20 = match[match.score > 0]["gene_symbol"].to_list()[0:20]
         top_iuis = [x for x in top20 if x in symbol_list_iuis]
 
         st.dataframe(match[match["score"] > 0].drop(columns=["sum"]))
