@@ -353,7 +353,7 @@ if submit_button:
 
         if gene_diag:
             if ncbi[gene_diag] in results_sum.index:
-                st.subheader(
+                st.header(
                     "Gene of interest: " + gene_diag,
                 )
                 p = (
@@ -441,7 +441,17 @@ if submit_button:
                         ]
                     ]
                 )
-        st.subheader("Top 20 IUIS descriptions")
+            if gene_diag in symbol_list_monarch:
+                st.subheader(gene_diag + " monarch descriptions")
+                st.write(
+                    monarch_info.reset_index()
+                    .set_index("gene_symbol")
+                    .loc[gene_diag]
+                    .reset_index()
+                )
+        st.header("Top 20 descriptions")
+
+        st.subheader("IUIS descriptions")
         st.write(
             iei_info.reset_index()
             .set_index("UpdatedGene")
@@ -456,7 +466,7 @@ if submit_button:
                 ]
             ]
         )
-        st.subheader("Top 20 Monarch descriptions")
+        st.subheader("Monarch descriptions")
         st.write(
             monarch_info.reset_index()
             .set_index("gene_symbol")
