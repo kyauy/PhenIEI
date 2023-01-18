@@ -68,6 +68,17 @@ def load_iei_info():
 
 
 @st.cache(allow_output_mutation=True, max_entries=50)
+def load_monarch_info():
+    matrix = pd.read_csv(
+        "data/monarch_disease.tsv",
+        sep="\t",
+        # compression="gzip",
+        index_col=0,
+    )
+    return matrix
+
+
+@st.cache(allow_output_mutation=True, max_entries=50)
 def add_microdel_to_dict(ncbi_dict):
     new_d = {str(key): str(value) for key, value in ncbi_dict.items()}
     new_d["Del10p13-p14"] = "Del10p13-p14"
@@ -189,10 +200,13 @@ hp_onto = load_hp_ontology()
 hp_desc_id = hpo_description_to_id()
 ncbi, symbol = symbol_to_id_to_dict()
 iei_info = load_iei_info()
+monarch_info = load_monarch_info()
 data = load_data()
 gene_list = list(data.index)
 symbol_list = [symbol[i] for i in gene_list if i in symbol.keys()]
 symbol_list_iuis = list(set(iei_info["UpdatedGene"].to_list()))
+symbol_list_monarch = list(set(monarch_info["gene_symbol"].to_list()))
+
 
 with st.form("my_form"):
     hpo_raw = st.multiselect(
@@ -312,11 +326,21 @@ if submit_button:
         match = results_sum[cols].sort_values(by=["score"], ascending=False)
         top20 = match[match.score > 0]["gene_symbol"].to_list()[0:20]
         top_iuis = [x for x in top20 if x in symbol_list_iuis]
-
+        top_monarch = [x for x in top20 if x in symbol_list_monarch]
+        match_iuis = [
+            x
+            for x in match[match.score > 0]["gene_symbol"].to_list()
+            if x in symbol_list_iuis
+        ]
         st.dataframe(match[match["score"] > 0].drop(columns=["sum"]))
         # st.write(
         #    "Number of genes with at least one match: ", len(match[match["score"] > 0])
         # )
+        st.write("Number of IUIS genes with at least one match: ", len(match_iuis))
+        st.write(
+            "Number of genes with at least one match: ", len(match[match["score"] > 0])
+        )
+
         match_csv = convert_df(match)
 
         st.download_button(
@@ -375,47 +399,48 @@ if submit_button:
                 )
             else:
                 st.write("Gene ID rank:", " Gene not ranked by PhenoIEI")
-            st.subheader(gene_diag + " IUIS descriptions")
-            st.write("Disease category")
-            st.write(
-                iei_info[iei_info["UpdatedGene"] == gene_diag][
-                    [
-                        "Major category",
-                        "Subcategory",
-                        "Inheritance",
+            if gene_diag in symbol_list_iuis:
+                st.subheader(gene_diag + " IUIS descriptions")
+                st.write("Disease category")
+                st.write(
+                    iei_info[iei_info["UpdatedGene"] == gene_diag][
+                        [
+                            "Major category",
+                            "Subcategory",
+                            "Inheritance",
+                        ]
                     ]
-                ]
-            )
+                )
 
-            st.write("Clinical features")
-            st.write(
-                iei_info[iei_info["UpdatedGene"] == gene_diag][
-                    [
-                        "Associated features",
+                st.write("Clinical features")
+                st.write(
+                    iei_info[iei_info["UpdatedGene"] == gene_diag][
+                        [
+                            "Associated features",
+                        ]
                     ]
-                ]
-            )
-            st.write("Biological features")
-            st.write(
-                iei_info[iei_info["UpdatedGene"] == gene_diag][
-                    [
-                        "T cell count",
-                        "B cell count",
-                        "Immunoglobulin levels",
-                        "Neutrophil count",
-                        "Other affected cells",
+                )
+                st.write("Biological features")
+                st.write(
+                    iei_info[iei_info["UpdatedGene"] == gene_diag][
+                        [
+                            "T cell count",
+                            "B cell count",
+                            "Immunoglobulin levels",
+                            "Neutrophil count",
+                            "Other affected cells",
+                        ]
                     ]
-                ]
-            )
-            st.write("Known therapies and pathways")
-            st.write(
-                iei_info[iei_info["UpdatedGene"] == gene_diag][
-                    [
-                        "KEGG_drug",
-                        "KEGG_pathway",
+                )
+                st.write("Known therapies and pathways")
+                st.write(
+                    iei_info[iei_info["UpdatedGene"] == gene_diag][
+                        [
+                            "KEGG_drug",
+                            "KEGG_pathway",
+                        ]
                     ]
-                ]
-            )
+                )
         st.subheader("Top 20 IUIS descriptions")
         st.write(
             iei_info.reset_index()
@@ -430,6 +455,21 @@ if submit_button:
                     "Associated features",
                 ]
             ]
+        )
+        st.subheader("Top 20 Monarch descriptions")
+        st.write(
+            monarch_info.reset_index()
+            .set_index("gene_symbol")
+            .loc[top_monarch]
+            .reset_index()
+            # .set_index("index")[
+            #    [
+            #        "Major category",
+            #        "Subcategory",
+            #        "Inheritance",
+            #        "Associated features",
+            #    ]
+            # ]
         )
     else:
         st.write(
