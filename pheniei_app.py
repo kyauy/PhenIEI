@@ -245,7 +245,7 @@ with st.form("my_form"):
         label_after=True,
         inactive_color="#D3D3D3",
         active_color="#ff4b4b",
-        track_color="#ffcccc",
+        track_color="#f8f9fb",
     )
 
 if submit_button:
