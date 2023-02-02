@@ -241,8 +241,8 @@ with st.form("my_form"):
     switch = tog.st_toggle_switch(
         label="Add direct parents of symptoms in HPO",
         key="Key1",
-        default_value=True,
-        label_after=False,
+        default_value=False,
+        label_after=True,
         inactive_color="#D3D3D3",
         active_color="#ff4b4b",
         track_color="#ffcccc",
