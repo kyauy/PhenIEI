@@ -243,9 +243,9 @@ with st.form("my_form"):
         key="Key1",
         default_value=False,
         label_after=True,
-        inactive_color="#D3D3D3",
+        inactive_color="#f8f9fb",
         active_color="#ff4b4b",
-        track_color="#f8f9fb",
+        track_color="#ffcccc",
     )
 
 if submit_button:
