@@ -4,6 +4,7 @@ emoji: fire
 sdk: streamlit
 sdk_version: 1.21.0 
 app_file: pheniei_app.py
+python_version: 3.8
 pinned: true
 ---
 
